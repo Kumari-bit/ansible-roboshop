@@ -73,28 +73,16 @@
   #     login_host: mysql.daws84s.site
   #     login_db: cities
 
-  - name: import data
-    tags:
-    - import
-    community.mysql.mysql_db:
-      name: all
-      login_user: root
-      login_password: RoboShop@1
-      login_host: mysql.daws85s.cyou
-      state: import
-      target: "{{ item }}"
+  - name: Load all SQL files
+    ansible.builtin.shell: mysql -h mysql.daws85s.cyou -uroot -pRoboShop@1 < {{ item }}
     loop:
-    - /app/db/schema.sql
-    - /app/db/app-user.sql
-    - /app/db/master-data.sql
+      - /app/db/schema.sql
+      - /app/db/app-user.sql
+      - /app/db/master-data.sql
 
-  - name: restart shipping
-    tags:
-    - import
-    ansible.builtin.service:
-      state: restarted
+  - name: Restart shipping service
+    ansible.builtin.systemd:
       name: shipping
-  
-
+      state: restarted
 
   
